@@ -1,0 +1,221 @@
+﻿AMAZON EC2
+Elastic Compute Cloud
+DETAILED CASE STUDY
+Amazon Web Services  |  2006 - Present
+31%
+Global cloud market share750+
+Instance types available34
+Geographic regions globally
+Section 1: Background & Origins
+What is Amazon EC2?
+Amazon Elastic Compute Cloud (EC2) is the flagship compute service of Amazon Web Services (AWS), providing on-demand, scalable virtual servers - called instances - in the cloud. Launched in beta in August 2006, EC2 eliminated the need for organizations to invest in physical hardware, enabling anyone to rent compute capacity by the hour, scale instantly, and pay only for what they use.
+
+EC2 is classified as Infrastructure as a Service (IaaS) - it provides the raw compute layer (CPU, RAM, networking, storage) while the customer controls the operating system, runtime environment, and applications running on top.
+
+The Problem EC2 Was Built to Solve
+Before cloud computing, organizations faced a painful dichotomy: either buy and operate expensive on-premises servers (accepting high upfront costs and idle capacity during off-peak periods) or be constrained in their ability to scale rapidly during demand spikes.
+
+ChallengeTraditional InfrastructureWith Amazon EC2Server provisioning timeWeeks to monthsUnder 60 secondsCost modelLarge upfront CapExPay-as-you-go OpExTraffic spikesMust over-provisionAuto Scaling handles automaticallyIdle capacityHardware sits unusedTerminate instances - zero costPhysical managementRequires data center, cooling, staffAWS manages all physical infrastructureFault toleranceSingle point of failure riskMulti-AZ with automatic failoverGlobal expansionBuild or lease new data centers34 AWS regions available on demand
+Origin Story
+Amazon built EC2 out of necessity. Running Amazon.com required world-class scalable infrastructure. In 2002, Amazon's leadership realized this infrastructure capability could be offered to the world as a service. EC2 was the result - a bet that compute could become a utility, like electricity. Andy Jassy, former AWS CEO, described it as "renting compute by the hour for the entire world."
+Key Milestones
+YearMilestone2002Amazon begins internal discussions on offering infrastructure as a service2004Amazon SQS launches as the first AWS public serviceAug 2006EC2 launches in limited public beta with a single instance type (m1.small)Oct 2008EC2 reaches general availability; Windows Server support added2009Elastic Load Balancing and Auto Scaling launched; Multiple AZ support added2012SSD-backed High I/O instances introduced for database workloads2018AWS Graviton (Arm-based CPUs) launched - Amazon's own silicon2021Graviton3 processors introduced with 25% better performance over Graviton22023Graviton4 and Trainium2 chips launched for general compute and ML training2025EC2 fleet spans 750+ instance types across 34 global regions
+
+
+Section 2: Technical Architecture
+Core Concepts
+Instances
+An EC2 instance is a virtual machine running on AWS physical hardware. Each instance has a defined amount of CPU, memory (RAM), storage, and networking capacity. Instances are launched from Amazon Machine Images (AMIs) - pre-configured templates containing the operating system and software stack.
+Instance Types & Families
+EC2 offers 750+ instance types organized into six families, each optimized for different workload characteristics:
+
+FamilyPrefix ExamplesOptimized ForBest Use CasesGeneral Purposet4g, m7g, m6iBalanced CPU/RAM/networkingWeb servers, dev/test, microservices, small databasesCompute Optimizedc7g, c6in, c5nHigh-performance CPUsHPC, batch processing, ML inference, gaming serversMemory Optimizedr7g, x2gd, u-24tb1Large RAM, fast memoryIn-memory databases, big data analytics, SAP HANAStorage Optimizedi4i, d3en, h1High IOPS, NVMe SSDNoSQL databases, data warehousing, HadoopAccelerated Computingp5, g5, trn1, inf2GPUs and custom AWS chipsML training, video encoding, 3D renderingHPC Optimizedhpc7g, hpc6aEFA networking, Graviton4Computational fluid dynamics, finite element analysis
+Availability Zones and Regions
+AWS operates 34 geographic regions worldwide, each containing 2-6 Availability Zones (AZs). An AZ is one or more discrete data centers with redundant power, networking, and connectivity. Deploying instances across multiple AZs within a region provides high availability - if one AZ has an outage, instances in other AZs continue serving traffic.
+Amazon Machine Images (AMIs)
+An AMI is a template containing the operating system, application server, and applications required to launch an EC2 instance. AWS provides thousands of AMIs (Amazon Linux, Ubuntu, Windows Server, Red Hat, etc.) and users can create custom AMIs from their own configured instances, enabling rapid and consistent deployment.
+Security Groups and VPC
+Security Groups act as virtual firewalls controlling inbound and outbound traffic at the instance level. Instances run inside a Virtual Private Cloud (VPC) - an isolated virtual network with full control over IP addressing, subnets, route tables, and network gateways. This provides network isolation equivalent to a traditional data center's private network.
+Elastic Block Store (EBS)
+EBS provides persistent block-level storage volumes that attach to EC2 instances like a virtual hard drive. Key volume types include:
+• gp3 - General Purpose SSD: balanced price/performance, up to 16,000 IOPS
+• io2 Block Express - Provisioned IOPS SSD: up to 256,000 IOPS for mission-critical databases
+• st1 - Throughput Optimized HDD: sequential workloads like log processing
+• sc1 - Cold HDD: lowest cost, infrequently accessed data
+
+Production Architecture Pattern
+A typical production web application on EC2 follows this layered architecture:
+
+LayerServiceRoleDNSAmazon Route 53Domain name resolution, health checks, routing policies (latency, geolocation, failover)EdgeAmazon CloudFrontCDN, DDoS protection, TLS termination, static asset caching at edge locationsLoad balancingElastic Load Balancer (ALB)Distributes HTTP/HTTPS traffic across EC2 instances, path-based routing, health checksComputeEC2 instances (Auto Scaling group)Application servers running business logic, deployed across multiple Availability ZonesStorage (block)Amazon EBSPersistent volumes attached to EC2 instances for OS and application dataDatabaseAmazon RDS (Multi-AZ)Managed relational database with automatic failover to standby replica in a different AZObject storageAmazon S3Static assets, media files, backups, data lake storageMonitoringAmazon CloudWatchMetrics, alarms, dashboards, log aggregation, Auto Scaling triggers
+Auto Scaling
+EC2 Auto Scaling automatically adjusts the number of instances in response to demand. It uses scaling policies based on CloudWatch metrics (CPU utilization, request count, custom metrics) to launch new instances when load increases and terminate them when load decreases - ensuring both performance and cost efficiency.
+
+Three scaling types are available:
+• Dynamic scaling: reacts to real-time CloudWatch alarm triggers
+• Predictive scaling: uses machine learning to forecast demand and pre-scales proactively
+• Scheduled scaling: scales at defined times for known patterns (e.g., business hours)
+
+
+
+Section 3: Real-World Company Case Studies
+Case Study 1: Netflix
+Streaming Media  |  260M+ subscribers  |  190 countries
+
+100%
+Moved off own data centers7 years
+Migration duration (2008-2016)~100K
+EC2 instances at peak99.99%
+Streaming uptime achieved
+Background and Problem
+In 2008, Netflix suffered a major database corruption incident that took down their DVD shipping service for three full days. Recognising the catastrophic risk of a single data center model, Netflix CEO Reed Hastings made the decision to migrate the entire platform to AWS EC2 - a process that took seven years to complete.
+
+The challenge was immense: serving billions of streaming hours per year with zero tolerance for downtime, across 190 countries, with massive traffic spikes whenever major new content launched. The "Squid Game" season two premiere, for example, saw streaming demand increase 10x within minutes of release.
+The EC2 Solution
+Netflix rebuilt their entire platform on EC2 using a microservices architecture comprising over 700 independent services. Each service team owns and operates their own EC2 infrastructure independently. Key technical decisions included:
+• C-series instances for video transcoding and encoding workloads
+• M-series instances for general-purpose microservices
+• R-series instances for the recommendation engine and caching layers
+• Spot Instances for batch transcoding jobs - saving up to 80% on compute costs
+• Multi-region active-active deployment for global resilience
+
+Netflix pioneered "Chaos Engineering" - a practice of deliberately terminating EC2 instances in production (via their Simian Army toolset, including Chaos Monkey) to validate that the system could self-heal. If an instance failure in production was acceptable, it would never cause an outage.
+Outcomes
+• Eliminated extended outages from hardware events - the system routes around failed instances automatically
+• Scales from 500,000 to 15,000,000+ concurrent streams within minutes during major releases
+• Video encoding pipeline time cut from days to hours using Spot Instance fleets for batch processing
+• Launched across 130 new countries simultaneously in January 2016 - impossible with owned infrastructure
+• Engineering teams deploy code hundreds of times per day with zero planned downtime windows
+
+Key Lesson
+Netflix proved that "cloud-native" architecture - designing for failure rather than trying to prevent it - enables greater reliability than traditional "design for no failure" approaches. Their Chaos Engineering practice is now an industry standard.
+Case Study 2: NASA / Jet Propulsion Laboratory
+Space Exploration & Scientific Research  |  U.S. Federal Agency
+
+2.7 TB
+Image data processed160
+EC2 instances provisioned< 2 hrs
+Data published post-landing$0
+Idle hardware cost post-mission
+Background and Problem
+When NASA's Curiosity Rover landed on Mars on August 6, 2012, the world wanted to see the raw imagery immediately. NASA's Jet Propulsion Laboratory needed to process 2.7 terabytes of raw telemetry and image data and serve it to potentially millions of simultaneous visitors - but only for a short peak window following the landing event.
+
+Purchasing permanent hardware for a one-time peak event made no economic or logistical sense. Traditional procurement timelines of weeks or months made it impossible to have hardware ready in time. NASA needed to spin up massive compute capacity within hours and shut it down immediately after.
+The EC2 Solution
+NASA provisioned 160 EC2 instances within hours of the landing event using On-Demand pricing. The fleet processed raw rover telemetry and imagery data in parallel, with results served globally via Amazon CloudFront CDN. After the peak window closed, all 160 instances were terminated. NASA paid only for the actual hours of compute usage - at a tiny fraction of what permanent hardware would have cost.
+Outcomes
+• 2.7 TB of Mars surface imagery processed and published within 2 hours of landing
+• Millions of concurrent website visitors served without performance degradation
+• Zero ongoing hardware costs once the mission window concluded
+• This "burst-then-terminate" pattern is now used for all major NASA public data release events
+• JPL now runs large-scale scientific simulations on EC2 HPC clusters with Elastic Fabric Adapter (EFA) networking
+
+Key Lesson
+EC2's On-Demand pricing model enabled NASA to apply genuine computing resources to a genuine need, for exactly the duration of that need - without any capital expenditure, procurement delay, or idle infrastructure. The elasticity of EC2 is most powerful precisely in these bursty, unpredictable scenarios.
+
+
+Case Study 3: Airbnb
+Travel & Hospitality Marketplace  |  150M+ users  |  Founded 2008  |  220+ countries
+
+100%
+Cloud-native from day one10×
+Traffic growth absorbed seamlessly75%
+ML compute cost savings via Spot3 min
+Average production deploy time
+Background and Problem
+Airbnb launched in 2008 - the same year AWS EC2 reached general availability - and made the strategic decision to be cloud-native from the very first line of code. As a two-sided marketplace, Airbnb's traffic profile is intensely seasonal: demand spikes dramatically during holiday periods, major events (Super Bowl, Olympics), and summer travel peaks, then falls significantly in off-peak windows.
+
+They also needed to expand to 220+ countries quickly, support 40+ languages, handle payments in 190+ currencies, and operate search across 7 million active listings in real time - without building any physical infrastructure.
+The EC2 Solution
+Airbnb built on EC2 with Auto Scaling groups spanning multiple Availability Zones from the start. Their architecture evolved as the company grew:
+• EC2 M5/M6g instances - core web application servers, handling booking logic and user sessions
+• EC2 R5 instances - search, personalization, and real-time pricing recommendation systems
+• EC2 Spot Instances - ML model training pipelines, data ETL, and analytics workloads (75% cost savings)
+• Predictive Auto Scaling - pre-provisions capacity before anticipated demand spikes like New Year's Eve
+• Amazon EMR on EC2 - large-scale data processing for pricing optimization and fraud detection
+
+Airbnb's data science team extensively uses EC2 Spot Instances for model training - running training jobs that can be interrupted and resumed without data loss, achieving cost savings of 70-80% compared to On-Demand pricing for the same compute.
+Outcomes
+• Scaled from hundreds to tens of thousands of compute instances without any hardware procurement
+• Expanded to 220+ countries with zero physical infrastructure investment in any market
+• ML model retraining costs reduced 75% through systematic use of Spot Instances
+• Holiday traffic spikes absorbed automatically - engineers focus on features, not capacity planning
+• Continuous deployment pipeline delivers new features multiple times daily with zero downtime
+
+Key Lesson
+Airbnb demonstrates the strategic advantage of being cloud-native from founding. Because they never built a legacy data center estate, there was no migration cost, no compatibility burden, and no organizational resistance. Every architectural decision was made with cloud-scale economics in mind from day one.
+Case Study 4: Expedia Group
+Online Travel  |  25+ Brands  |  $12B+ Annual Revenue  |  Hotels.com, Vrbo, Orbitz, Travelocity
+
+80%
+Workloads migrated to AWS25%
+Infrastructure cost reduction4×
+Faster time-to-market100M+
+Daily search queries served
+Background and Problem
+Expedia Group operates 25+ travel brands including Hotels.com, Vrbo, Orbitz, and Travelocity. Each brand historically ran on separate, siloed on-premises infrastructure - creating massive duplication of hardware, engineering effort, and operational cost across the group.
+
+Search queries during peak travel booking seasons (January 'New Year' surge, school holiday windows) overwhelmed capacity while leaving expensive hardware sitting idle for months. Migrating 25 brands with complex legacy systems to modern cloud infrastructure - while maintaining 100 million+ daily searches with no interruption - was a multi-year engineering challenge.
+The EC2 Solution
+Expedia adopted a "cloud-first" strategy, migrating 80% of their entire technology portfolio to AWS EC2. Key strategies included:
+• EC2 Graviton3 instances for Java-based backend services - 20% better price-performance over x86
+• Reserved Instances for stable baseline workloads - 60%+ savings over On-Demand for known capacity
+• Spot Instances for flexible ML training, data processing, and analytics - 70-90% cost reduction
+• EC2 C6g instances for compute-intensive search ranking and personalization
+• Amazon EKS on EC2 - Kubernetes-based container orchestration across all 25+ brands
+• Cross-brand shared platform - all brands share a single cloud infrastructure with brand-level isolation
+Outcomes
+• 25% overall infrastructure cost reduction across Expedia Group without reducing capacity or reliability
+• 4× faster feature delivery - from quarterly releases to weekly deployments across all brands
+• EC2 Graviton3 instances delivered 20% better price-performance for Java microservices vs. x86 equivalents
+• 100M+ daily search queries handled elastically - no manual capacity planning required
+• All 25+ brands now share a single cloud platform with independent team deployments and brand-level isolation
+
+Key Lesson
+Expedia shows that EC2 migration generates compounding returns: the cost savings from Reserved Instances and Graviton instances fund further investment in developer tooling, which accelerates feature delivery, which drives revenue growth. The 25% cost reduction paid for itself through increased engineering velocity.
+
+
+Section 4: Pricing Models Deep Dive
+EC2 Pricing Model Comparison
+EC2 offers five distinct pricing models, each optimized for different workload characteristics. Most mature AWS customers use a combination of all five - a "layered commitment" strategy that maximizes savings while retaining flexibility.
+
+Pricing ModelCommitmentSavings vs On-DemandFlexibilityBest ForOn-DemandNoneBaseline (0%)Maximum - start/stop any timeDev/test, unpredictable spikes, short-term workloadsReserved Instances (1-yr)1-year termUp to 38%High - specific instance family/regionSteady-state production, databases, 12-month planningReserved Instances (3-yr)3-year termUp to 62%Medium - locked to instance type/regionLong-term stable workloads with predictable compute needsSavings Plans (1-yr)1-year, $/hr spend commitUp to 40%High - applies across instance families, regionsOrganizations with consistent spend but varied instance typesSpot InstancesNone (interruptible)Up to 90%Low - can be reclaimed with 2-min warningBatch jobs, ML training, CI/CD workers, stateless web tierDedicated HostsOn-Demand or 1-3 yrVaries (premium for isolation)Low - physical host dedicated to single customerBYOL licensing, regulatory isolation, compliance requirements
+Layered Commitment Strategy
+Leading AWS customers use a systematic approach to cost optimization by layering pricing models:
+
+Step 1 - Establish baseline with Reserved Instances or Savings Plans
+Analyse your last 3-6 months of compute usage. Identify the minimum consistent usage (the "baseline") - the compute that runs 24/7 regardless of demand. Commit this baseline via Reserved Instances or Savings Plans for 1-3 years. Typical savings: 40-62% on baseline costs.
+Step 2 - Handle variable demand with On-Demand
+Workloads that vary above your baseline are handled with On-Demand instances. These provide maximum flexibility - you pay the full rate but only when needed. This tier typically represents 20-40% of total compute.
+Step 3 - Shift fault-tolerant workloads to Spot
+Any workload that can tolerate interruption - batch processing, ML training, data pipeline runs, CI/CD workers - should run on Spot Instances. At 70-90% savings, even small Spot adoption generates significant cost reduction. Airbnb saves 75% on their ML compute using this approach.
+Cost Comparison: On-Premises vs EC2 (m5.xlarge equivalent)
+Cost CategoryOn-Premises (3-year)EC2 On-Demand (3-year)EC2 Reserved 3-yrCompute hardware$12,000+IncludedIncludedRack space / colocation$3,000+IncludedIncludedPower and cooling$2,400+IncludedIncludedNetwork equipment$2,000+IncludedIncludedIT staff (infrastructure)$30,000+ (pro-rated)Included (managed)Included (managed)Hardware replacement / refresh$6,000+Included (automatic)Included (automatic)Total 3-year estimate$55,000+$15,000-20,000$5,500-7,500Savings vs on-premises-60-70% savings85-90% savings
+
+
+Section 5: Key Takeaways & Strategic Conclusions
+What the Case Studies Teach Us
+1. Elasticity is the primary value driver
+Across all four case studies, the ability to scale precisely to demand - and immediately release unused capacity - delivered more business value than the raw cost savings alone. Netflix scales from 500K to 15M streams instantly. NASA stood up 160 servers in hours for a one-time event. Airbnb handles New Year's Eve without over-provisioning for the rest of the year. Expedia processes 100M daily searches without idle hardware.
+2. EC2 enables a fundamentally different development model
+All four organizations achieved dramatic improvements in engineering velocity - from quarterly to weekly or daily deployments. EC2's API-driven infrastructure means developers can provision test environments in seconds, experiment freely, and tear down resources without cost when experiments end. This reduces the organizational overhead of infrastructure from a bottleneck to an enabler.
+3. The cost model transforms financial decision-making
+Moving from CapEx (buying servers) to OpEx (renting compute) fundamentally changes how organizations can invest in technology. Startup Airbnb accessed enterprise-grade infrastructure from day one with no upfront capital. NASA ran a mission-critical workload for a few thousand dollars instead of millions. These economics open capabilities to organizations that could previously never afford them.
+4. Multi-AZ and geographic distribution are not optional
+Every production workload in these case studies deploys across multiple Availability Zones. The Netflix outage that triggered their AWS migration was a cautionary tale of single-point-of-failure architecture. Modern EC2 deployments treat failure as an expected event to be designed around, not a rare exception to be prevented.
+5. Instance type selection is a performance and cost multiplier
+Expedia's 20% improvement from switching to Graviton3 for Java workloads, Netflix's cost reductions from using Spot Instances for transcoding, and Airbnb's 75% ML cost reduction from Spot training - all came from matching the right instance type to the workload. Generic compute choices leave significant performance and cost value unrealized.
+
+EC2 vs Competitors
+CapabilityAmazon EC2Azure VMsGoogle Compute EngineInstance variety750+ types - broadest selection400+ types~100 machine typesCustom siliconGraviton4, Trainium, InferentiaCobalt 100 (Arm)Axion (Arm), TPUsSpot/preemptibleUp to 90% off, 2-min warningUp to 90% off, 30-sec warningUp to 91% off, 30-sec warningGlobal regions34 regions, 108 AZs60+ regions40+ regionsMarket position31% cloud market share (leader)21% market share11% market shareStrengthBroadest ecosystem, most matureWindows / enterprise integrationNetworking performance, Kubernetes
+Conclusion
+Amazon EC2 transformed computing from a capital-intensive, slow-moving discipline into an elastic, API-driven utility. The case studies presented here - Netflix, NASA, Airbnb, and Expedia - represent a fraction of the millions of organizations that have adopted EC2 to solve real business problems.
+
+The common thread across all case studies is not the technology itself but what the technology enables: faster experimentation, lower risk, global reach without global infrastructure investment, and the ability to match resources precisely to need rather than to anticipated peak demand.
+
+As Amazon continues to invest in custom silicon (Graviton, Trainium, Inferentia), new instance families, and expanded global regions, EC2 remains the foundational compute layer not just for AWS's 31% cloud market share, but for a significant fraction of the modern internet.
+
+Document Information
+Prepared by: Technical Research Team  |  Document version: 1.0  |  Date: May 2026  |  Classification: General Reference  |  Data sources: AWS Case Studies, AWS Documentation, IDC Cloud Market Reports, company public disclosures
+Amazon EC2 - Detailed Case StudyElastic Compute Cloud  |  AWS
+Page 1 of 2   |   Amazon Web Services, Inc.   |   Confidential
+

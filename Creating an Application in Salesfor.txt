@@ -1,0 +1,159 @@
+Creating an Application in Salesforce Using Apex Programming Language
+Aim
+
+To create a simple application in Salesforce using Apex by creating:
+
+Custom Object
+Custom Fields
+Apex Class
+Apex Trigger
+Insert and display records
+Step 1: Create Custom Object
+Steps
+Login to Salesforce
+Go to:
+Setup → Object Manager
+Click:
+Create → Custom Object
+Enter:
+Field	Value
+Label	Student
+Object Name	Student
+Click Save
+Step 2: Create Custom Fields
+
+Open:
+
+Student Object → Fields & Relationships
+
+Create these fields:
+
+Field Label	Data Type	API Name
+Student Emails	Email	Student_Emails__c
+Course	Text	Course__c
+Marks	Number	Marks__c
+Step 3: Create Apex Class
+Open Developer Console
+Gear Icon → Developer Console
+Create Class
+File → New → Apex Class
+
+Class Name:
+
+StudentController
+Apex Class Program
+public class StudentController {
+
+    public static void addStudent(
+        String name,
+        String email,
+        String course,
+        Integer marks
+    ) {
+
+        Student__c stu = new Student__c();
+
+        stu.Name = name;
+        stu.Student_Emails__c = email;
+        stu.Course__c = course;
+        stu.Marks__c = marks;
+
+        insert stu;
+    }
+}
+
+Save the class.
+
+Step 4: Execute Apex Program
+
+Open:
+
+Debug → Open Execute Anonymous Window
+
+Run:
+
+StudentController.addStudent(
+    'Rahul',
+    'rahul@test.com',
+    'Salesforce',
+    85
+);
+
+Click Execute.
+
+Step 5: Create Custom Object Tab
+
+Go to:
+
+Setup → Tabs
+
+Under Custom Object Tabs:
+
+Click New
+Select Student object
+Save
+
+Now Student object appears in App Launcher.
+
+Step 6: View Records
+
+Open:
+
+App Launcher → Student
+
+You will see inserted student records.
+
+Step 7: Create Apex Trigger
+Create Trigger
+
+Open Developer Console:
+
+File → New → Apex Trigger
+
+Enter:
+
+Trigger Name → StudentTrigger
+sObject → Student__c
+Apex Trigger Program
+trigger StudentTrigger on Student__c (before insert) {
+
+    for(Student__c s : Trigger.new) {
+
+        if(s.Marks__c < 0) {
+
+            s.Marks__c = 0;
+        }
+    }
+}
+
+Save the trigger.
+
+Step 8: Test Trigger
+
+Open Execute Anonymous Window and run:
+
+StudentController.addStudent(
+    'Amit',
+    'amit@test.com',
+    'Java',
+    -50
+);
+
+Click Execute.
+
+Output
+Student Name	Course	Marks
+Rahul	Salesforce	85
+Amit	Java	0
+
+The trigger automatically converts negative marks into 0.
+
+Result
+
+Successfully created an application in Salesforce using Apex by:
+
+Creating custom objects
+Creating fields
+Writing Apex class
+Creating Apex trigger
+Inserting and validating records
